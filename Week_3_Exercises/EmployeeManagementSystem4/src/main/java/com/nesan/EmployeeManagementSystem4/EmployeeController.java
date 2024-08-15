@@ -1,12 +1,13 @@
-package com.example.EmployeeManagementSystem.controller;
+package com.nesan.EmployeeManagementSystem4;
 
-import com.example.EmployeeManagementSystem.model.Employee;
-import com.example.EmployeeManagementSystem.repository.EmployeeRepository;
+import com.nesan.EmployeeManagementSystem4.Employee;
+import com.nesan.EmployeeManagementSystem4.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -22,9 +23,9 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
-        return employeeRepository.findById(id)
-                .map(ResponseEntity::ok)
+        return employeeRepository.findById(id).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+                
     }
 
     @PostMapping
@@ -41,8 +42,7 @@ public class EmployeeController {
                     employee.setDepartment(employeeDetails.getDepartment());
                     Employee updatedEmployee = employeeRepository.save(employee);
                     return ResponseEntity.ok(updatedEmployee);
-                })
-                .orElse(ResponseEntity.notFound().build());
+                }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
@@ -53,5 +53,10 @@ public class EmployeeController {
                     return ResponseEntity.noContent().build();
                 })
                 .orElse(ResponseEntity.notFound().build());
+    }
+    
+    @GetMapping("/by-name-and-department")
+    public List<Employee> getEmployeesByNameAndDepartment(@RequestParam String name, @RequestParam String departmentName) {
+        return employeeRepository.findByNameAndDepartment(name, departmentName);
     }
 }
